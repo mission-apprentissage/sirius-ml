@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from typing import Dict
-import uvicorn
 from app.moderation import Classifier, expose_function
 
 app = FastAPI()
@@ -58,7 +57,3 @@ async def expose(query: Dict):
             'text': text,
             'exposition' : exposition,
     }
-
-if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000)
-

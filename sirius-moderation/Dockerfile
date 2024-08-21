@@ -15,6 +15,6 @@ COPY --chown=sirius ./requirements.txt /code/requirements.txt
 RUN python -m pip install --upgrade pip && pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY --chown=sirius ./app /code/app
-#CMD ["uvicorn", "app.main:app", "--reload"]
-#CMD ["gunicorn", "app.main:app", "-w", "4" "-k", "uvicorn.workers.UvicornWorker"]
-CMD ["fastapi", "run", "app/main.py"]
+#CMD ["uvicorn", "app.api:app", "--reload"]
+#CMD ["gunicorn", "app.api:app", "-w", "4" "-k", "uvicorn.workers.UvicornWorker"]
+CMD ["fastapi", "run", "app/api.py"]
