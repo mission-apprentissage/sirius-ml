@@ -15,6 +15,8 @@ async def root():
 
 @app.post("/score")
 async def score(request: Request):
+    print('[score] Receive request', request)
+
     # Load datas
     form = await request.form()
     bytes_data = await form["file"].read()

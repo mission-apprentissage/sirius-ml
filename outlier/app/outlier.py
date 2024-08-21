@@ -10,7 +10,7 @@ from sklearn.mixture import GaussianMixture
 from io import BytesIO
 import ast
 
-data_path = './'
+data_path = './dataset/'
 
 class Outlier:
     def __init__(self):
@@ -36,7 +36,17 @@ class Outlier:
         # Encode features
         num_df = datas_df[num_feat]
         cat_df = pd.concat([pd.get_dummies(datas_df[col], prefix=col, dummy_na=False, dtype=int) for col in cat_feat], axis=1)
-        text_df = pd.concat([pd.DataFrame(self.encoder.encode(datas_df[col], device="cuda", show_progress_bar=True)) for col in txt_feat], axis=1)
+
+        # Start the multi-process pool on all available CPU
+        #print(f"Start multi-process pool...")
+        #pool = self.encoder.start_multi_process_pool(["cpu"]*4)
+        print(f"Start encoding sentences...")
+        # Compute the embeddings using the multi-process pool
+        text_df = pd.concat([pd.DataFrame(self.encoder.encode(datas_df[col], show_progress_bar=True)) for col in txt_feat], axis=1)
+        #text_df = pd.concat([pd.DataFrame(self.encoder.encode_multi_process(datas_df[col], pool, show_progress_bar=True)) for col in txt_feat], axis=1)
+        # Optional: Stop the processes in the pool
+        #self.encoder.stop_multi_process_pool(pool)
+
         txt_cols = []
         for col in txt_feat:
             for i in range(1024):

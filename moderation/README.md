@@ -9,7 +9,7 @@ The application depends on this secret environment variables:
 
 ### Install the requirements
 
-`cd sirius-moderation && python3 -m venv .venv && source .venv/bin/activate`
+`cd moderation && python3 -m venv .venv && source .venv/bin/activate`
 
 `pip install -r requirements.txt`
 
