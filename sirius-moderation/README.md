@@ -1,4 +1,4 @@
-# SIRIUS-API
+# SIRIUS-MODERATION
 
 ## 0. Add environment variable
 The application depends on this secret environment variables:
