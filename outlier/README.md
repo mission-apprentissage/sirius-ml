@@ -19,6 +19,7 @@ The application depends on this secret environment variables:
 ### Test endpoints
 
 #### Scoring
+`curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"id": "test"} --data-binary ./dataset/temoignages.csv`
 
 #### Detection
 `curl 'http://127.0.0.1:8000/detect' -X POST -H 'Content-Type: application/json' -d '{"scores":[-9.890680333249605,-8.81517297694887,-10.817086031345966,-9.134718245421285,-9.136104401859312,-10.10892008829345,-9.246591666943132], "percent": 1}'`
