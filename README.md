@@ -24,6 +24,16 @@ or `gunicorn app.api:app --workers 4 --worker-class uvicorn.workers.UvicornWorke
 http://127.0.0.1:8000/
 
 
+#### Short text
+`curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'`
+
+#### With rules
+`curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "tkt, ça va le faire si tu supportes l’OM !", "rules": "\n- Il suffit de supporter l’OM\n"}'`
+
+### Exposition
+`curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'`
+
+
 ## 2. Create image
 
 ### Build image
