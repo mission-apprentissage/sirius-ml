@@ -31,7 +31,7 @@ The application depends on this secret environment variables:
 ## 2. Create image
 
 ### Build image
-`docker buildx build -t sirius-moderation .`
+`docker buildx build --platform linux/amd64 -t sirius-moderation .`
 
 ### Run image
 `docker run -p 8000:8000 --name moderation -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-moderation`
