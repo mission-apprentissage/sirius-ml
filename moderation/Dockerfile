@@ -1,6 +1,5 @@
 FROM python:3.9
-RUN apt-get update && \
-    apt-get upgrade --yes
+RUN apt-get update && apt-get upgrade --yes
 
 # Create sirius user
 #RUN useradd --create-home sirius

@@ -9,43 +9,95 @@ The application depends on this secret environment variables:
 
 ### Install the requirements
 
-`cd moderation && python3 -m venv .venv && source .venv/bin/activate`
-
-`pip install -r requirements.txt`
+```
+$ cd moderation && python3 -m venv .venv && source .venv/bin/activate`
+$ pip install -r requirements.txt
+```
 
 ### Start the application
-`fastapi dev app/api.py`
+```
+# Start server
+$ fastapi dev app/api.py
+
+# Kill all server
+$ sudo lsof -t -i tcp:8000 | xargs kill -9
+```
 
 ### Test endpoints
+```
+# Short text
+$ curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
-#### Short text
-`curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'`
+# With rules
+$ curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "tkt, ça va le faire si tu supportes l’OM !", "rules": "\n- Il suffit de supporter l’OM\n"}'
 
-#### With rules
-`curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "tkt, ça va le faire si tu supportes l’OM !", "rules": "\n- Il suffit de supporter l’OM\n"}'`
-
-#### Exposition
-`curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'`
-
+# Exposition
+$ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+```
 
 ## 2. Create image
 
 ### Build image
-`docker buildx build --platform linux/amd64 -t sirius-moderation .`
-
+```
+docker buildx build --platform linux/amd64 -t sirius-moderation .
+```
 ### Run image
-`docker run -p 8000:8000 --name moderation -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-moderation`
-
-
+```
+docker run --rm -it --user=42420:42420 -p 8000:8000 --name moderation -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-moderation
+```
 ### Test endpoints
-`curl 'http://0.0.0.0:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'`
+```
+# Score
+$ curl 'http://0.0.0.0:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
-`curl 'http://0.0.0.0:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'`
-
+# Exposition
+$ curl 'http://0.0.0.0:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+```
 
 ### Stop and remove image
-`docker stop moderation && docker rm moderation`
+```
+$ docker stop moderation && docker rm moderation
+```
 
+## 3. Deploy on [OVHcloud](https://help.ovhcloud.com/csm/en-public-cloud-ai-deploy-build-use-custom-image?id=kb_article_view&sysparm_article=KB0057405)
 
-## 3. Deploy on OVHcloud
-[TODO]
+### Install [ovhai client](https://help.ovhcloud.com/csm/en-gb-public-cloud-ai-cli-install-client?id=kb_article_view&sysparm_article=KB0047844)
+```
+# Install client
+$ curl https://cli.gra.ai.cloud.ovh.net/install.sh | bash && source $HOME/.bashrc
+
+# Login client
+$ ovhai login
+```
+
+### Push docker image to OVHcloud
+```
+# Add a new registry into OVHcloud AI Tools
+$ ovhai registry add registry.gra.ai.cloud.ovh.net
+
+# Push your image
+$ docker login registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59
+$ docker tag sirius-moderation registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
+$ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
+```
+
+### Deploy
+```
+# Run app
+$ ovhai app run --name sirius-moderation --flavor ai1-1-cpu --cpu 1 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
+
+# Stop app
+$ ovhai app stop <ovh-id>
+
+# Delete app
+$ ovhai app delete <ovh-id>
+```
+
+### Test endpoint
+```
+# Score
+$ curl 'https://745687f3-c89b-4920-92f4-93c7e24bdcbf.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
+
+# Exposition
+$ curl 'https://745687f3-c89b-4920-92f4-93c7e24bdcbf.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+```
