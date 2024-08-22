@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from typing import Dict
-from app.outlier import Outlier, upload_dataset, delete_dataset, normalize_dataset
+from app.outlier import Outlier, create_dataset
 import numpy as np
 
 app = FastAPI()
@@ -20,19 +20,13 @@ async def score(request: Request):
     # Load datas
     form = await request.form()
     bytes_data = await form["file"].read()
-    file_id = form['id']
+    # file_id = form['id']
 
-    # Uploading dataset
-    upload_dataset(bytes_data, file_id)
-
-    # Normalize dataset
-    normalize_dataset(file_id)
+    # Create dataset
+    dataset = create_dataset(bytes_data)
 
     # Scoring dataset
-    scores = clf.fit(file_id)
-
-    # Remove dataset
-    delete_dataset(file_id)
+    scores = clf.fit(dataset)
 
     return {'scores': scores}
 

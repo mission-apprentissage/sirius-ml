@@ -19,11 +19,9 @@ class Outlier:
         self.encoder = SentenceTransformer(model_name)
         print(f"Loaded model {model_name} ({self.encoder.max_seq_length} tokens)")
 
-    def fit(self, file_id):
+    def fit(self, datas_df):
         # Load dataframe
-        file_path = data_path + file_id + '.csv'
-        datas_df = pd.read_csv(file_path, na_filter=False, low_memory=False)
-        print(f"Loaded dataset {datas_df.shape}.")
+        print(f"Fitting dataset {datas_df.shape}:")
 
         # Filter on categorical features
         num_feat = [col for col in datas_df.columns if datas_df[col].dtype == int]
@@ -40,7 +38,7 @@ class Outlier:
         # Start the multi-process pool on all available CPU
         #print(f"Start multi-process pool...")
         #pool = self.encoder.start_multi_process_pool(["cpu"]*4)
-        print(f"Start encoding sentences...")
+        print(f"Encoding sentences {datas_df[txt_feat].shape}...")
         # Compute the embeddings using the multi-process pool
         text_df = pd.concat([pd.DataFrame(self.encoder.encode(datas_df[col], show_progress_bar=True)) for col in txt_feat], axis=1)
         #text_df = pd.concat([pd.DataFrame(self.encoder.encode_multi_process(datas_df[col], pool, show_progress_bar=True)) for col in txt_feat], axis=1)
@@ -53,7 +51,7 @@ class Outlier:
                 txt_cols.append(col.split('.')[1]+'_'+str(i+1))
         text_df.columns = txt_cols
         dataset = pd.concat([num_df, cat_df, text_df], axis=1)
-        print(f"Encoded dataset {dataset.shape}.")
+        print(f"Encoded dataset; {dataset.shape}.")
 
         # PCA optimization
         pca = PCA()
@@ -70,37 +68,26 @@ class Outlier:
             features+=1
         X_train = X_pca[:, :features]
         train_ds = pd.DataFrame(X_train)
-        print(f"Reduced PCA dataset {train_ds.shape}.")
+        print(f"Reduced PCA dataset: {train_ds.shape}.")
 
         # Compute TSNE
         matrix = np.array(train_ds) # Convert to a list of lists of floats
         tsne = TSNE(n_components=2, perplexity=15, random_state=42, init='random', learning_rate=200)
         vis_dims = tsne.fit_transform(matrix)
-        print(f"Computed TSNE dataset {vis_dims.shape}.")
+        print(f"Computed TSNE dataset: {vis_dims.shape}.")
 
         # Train GaussianMixture model
         model = GaussianMixture(n_components=2, random_state=42)
         model.fit(vis_dims)
-        print(f"Trained GaussianMixture model.")
+        print(f"Fitted GaussianMixture model.")
 
         # Get the score for each sample
         train_ds = pd.DataFrame(vis_dims)
         scores = model.score_samples(train_ds)
-        print(f"Scored dataset {len(scores)}.")
+        print(f"Scored dataset: {len(scores)}.")
         return list(scores)
 
-def upload_dataset(bytes_data, file_id):
-    datas_df = pd.read_csv(BytesIO(bytes_data))
-    file_path = data_path + file_id + '.csv'
-    datas_df.to_csv(file_path, index=False)
-    print(f"Uploaded dataset {datas_df.shape} to {file_path}.")
-
-def delete_dataset(file_id):
-    file_path = data_path + file_id + '.csv'
-    os.remove(file_path)
-    print(f"Deleted dataset {file_path}.")
-
-def normalize_dataset(file_id):
+def normalize_dataset(df):
     pd.options.mode.chained_assignment = None  # default='warn'
     def literal_eval(val):
         try:
@@ -136,28 +123,29 @@ def normalize_dataset(file_id):
         norms = clean_cols(norms)
         return pd.concat(norms, ignore_index=True).add_prefix(col+'.', axis=1)
 
-    def normalize(df):
-        res = []
-        for col in df.columns:
-            # print(f"- Normalizing column {col}...")
-            serie = df[col].apply(literal_eval)
+    res = []
+    for col in df.columns:
+        # print(f"- Normalizing column {col}...")
+        serie = df[col].apply(literal_eval).fillna('')
 
-            # Check if list type
-            if any(serie.apply(lambda x: isinstance(x, list))):
-                try:
-                    # List type
-                    res.append(normalize_list(serie, col))
-                except:
-                    # List of dict type
-                    res.append(normalize_dict(serie.apply(literal_eval).fillna(''), col))
-            else:
-                res.append(serie)
-        return pd.concat(res, axis=1)
+        # Check if list type
+        if any(serie.apply(lambda x: isinstance(x, list))):
+            try:
+                # List type
+                res.append(normalize_list(serie, col))
+            except:
+                # List of dict type
+                res.append(normalize_dict(serie, col))
+        else:
+            res.append(serie)
+    return pd.concat(res, axis=1)
 
-    file_path = data_path + file_id + '.csv'
-    datas_df = pd.read_csv(file_path).apply(literal_eval)
+def create_dataset(bytes_data):
+    # Read datas
+    datas_df = pd.read_csv(BytesIO(bytes_data))
+    print(f"Read input datas {datas_df.shape}.")
 
-    # Normalize dataset
-    norm_df = normalize(datas_df)
-    norm_df.to_csv(file_path, index=False)
+    # Normalize datas
+    norm_df = normalize_dataset(datas_df)
     print(f"Normalized dataset {norm_df.shape}.")
+    return norm_df
