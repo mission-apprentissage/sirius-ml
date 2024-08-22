@@ -40,7 +40,7 @@ docker run --rm -it --user=42420:42420 -p 8000:8000 --name outlier sirius-outlie
 ### Test endpoints
 ```
 # Score
-curl http://0.0.0.0:8000/score -X POST -H "Content-Type: multipart/form-data" -F "file=@./dataset/sample.csv"`
+curl http://0.0.0.0:8000/score -X POST -H "Content-Type: multipart/form-data" -F "file=@./dataset/sample.csv"
 
 # Detection
 curl 'http://0.0.0.0:8000/detect' -X POST -H 'Content-Type: application/json' -d '{"scores":[-9.890680333249605,-8.81517297694887,-10.817086031345966,-9.134718245421285,-9.136104401859312,-10.10892008829345,-9.246591666943132], "percent": 1}'
@@ -76,7 +76,7 @@ $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sir
 ### Deploy
 ```
 # Run app
-$ ovhai app run --name sirius-outlier --flavor ai1-1-cpu --cpu 1 --replicas 1 --default-http-port 8000 --unsecure-http registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-outlier
+$ ovhai app run --name sirius-outlier --flavor l4-1-gpu --gpu 1 --replicas 1 --default-http-port 8000 --unsecure-http registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-outlier
 
 # Stop app
 $ ovhai app stop <ovh-id>
