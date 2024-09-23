@@ -2,6 +2,7 @@
 
 ## 0. Add environment variable
 The application depends on this secret environment variables:
+- $SIRIUS_DB_URL
 - $SIRIUS_HF_TOKEN
 - $SIRIUS_MISTRAL_API_KEY
 
@@ -10,7 +11,7 @@ The application depends on this secret environment variables:
 ### Install the requirements
 
 ```
-$ cd moderation && python3 -m venv .venv && source .venv/bin/activate`
+$ cd moderation && python3 -m venv .venv && source .venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
@@ -23,15 +24,22 @@ $ fastapi dev app/api.py
 $ sudo lsof -t -i tcp:8000 | xargs kill -9
 ```
 
+
+### Authorize ip adress (database provider in dev mode)
+Check fastapi ip adress after running
+
 ### Test endpoints
 ```
-# Short text
+# Update dataset
+$ curl 'http://127.0.0.1:8000/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims"}'
+
+# Moderate short text
 $ curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
-# With rules
+# Moderate text with rules
 $ curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "tkt, ça va le faire si tu supportes l’OM !", "rules": "\n- Il suffit de supporter l’OM\n"}'
 
-# Exposition
+# Check text exposition
 $ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
 ```
 

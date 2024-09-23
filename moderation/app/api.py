@@ -1,16 +1,47 @@
 from fastapi import FastAPI
 from typing import Dict
 from app.moderation import Classifier, expose_function
+from app.dataset import Dataset
+import os
+from ipwhois import IPWhois
+from requests import get
 
 app = FastAPI()
 
-# Instanciate classifier models
+# Instanciate dataset
+dataset = Dataset(db=os.environ['SIRIUS_DB_URL'])
+
+# Instanciate classifier model
 clf = Classifier()
+
+# Get IP adress for database connection
+ip = get('https://api.ipify.org').text
+whois = IPWhois(ip).lookup_rdap(depth=1)
+cidr = whois['network']['cidr']
+name = whois['network']['name']
+print('Provider:  ', name)
+print('Public IP: ', ip)
+print('CIDRs:     ', cidr)
 
 @app.get("/")
 async def root():
-    print('[sirius-moderation] Request for index page received')
+    print('[sirius-moderation] Request for index page received.')
     return {"status": "sirius-moderation API running."}
+
+@app.post("/update")
+async def update(query: Dict):
+    table = query['table']
+    print(f'[sirius-moderation] Updating SIRIUS {table} dataset...')
+
+    # Extract dataset from table
+    dataset.read(table=table)
+    dataset.prepare()
+    dataset.encode(text_col='text')
+
+    # Export dataset
+    dataset.save(filepath='./dataset/' + f'{table}.csv')
+
+    return {"status": f"SIRIUS {table} dataset updated."}
 
 @app.post("/score")
 async def score(query: Dict):
