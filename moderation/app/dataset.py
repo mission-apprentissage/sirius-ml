@@ -1,9 +1,10 @@
 from sentence_transformers import SentenceTransformer
 import pandas as pd
 import psycopg2
+from datasets import Dataset, load_dataset
 
-class Dataset():
-    def __init__(self, db=''):
+class Datas():
+    def __init__(self, db='', hf=''):
         # Load embedding model
         encoder_name = "Lajavaness/sentence-camembert-large"
         self.encoder = SentenceTransformer(encoder_name)
@@ -11,6 +12,7 @@ class Dataset():
 
         # Initialize dataset
         self.db = db
+        self.hf = hf
         self.table = None
         self.datas = None
         print("[Done] Dataset initialized.")
@@ -65,11 +67,12 @@ class Dataset():
         self.datas = pd.concat([self.datas, emb_df], axis=1)
         print(f"[Done] {self.table} embeddings ready.")
 
-    def save(self, filepath):
-        self.datas.to_csv(filepath, index=False)
-        print(f"[Done] {self.table} exported to: {filepath}.")
+    def save(self, repo):
+        dataset = Dataset.from_pandas(self.datas)
+        dataset.push_to_hub(repo, private=True, token=self.hf)
+        print(f"[Done] {self.table} exported to: {repo}.")
 
-    def load(self, table, filepath):
+    def load(self, table, repo):
         self.table = table
-        self.datas = pd.read_csv(filepath)
-        print(f"[Done] {self.table} loaded from: {filepath}.")
+        self.datas = load_dataset(repo, token=self.hf, split="all").to_pandas()
+        print(f"[Done] {self.table} loaded from {repo}: {self.datas.shape}")

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from typing import Dict
 from app.moderation import Classifier, expose_function
-from app.dataset import Dataset
+from app.dataset import Datas
 import os
 from ipwhois import IPWhois
 from requests import get
@@ -9,7 +9,7 @@ from requests import get
 app = FastAPI()
 
 # Instanciate dataset
-dataset = Dataset(db=os.environ['SIRIUS_DB_URL'])
+datas = Datas(db=os.environ['SIRIUS_DB_URL'], hf=os.environ['SIRIUS_HF_TOKEN'])
 
 # Instanciate classifier model
 clf = Classifier()
@@ -31,17 +31,28 @@ async def root():
 @app.post("/update")
 async def update(query: Dict):
     table = query['table']
+    repo = query['repo']
     print(f'[sirius-moderation] Updating SIRIUS {table} dataset...')
 
     # Extract dataset from table
-    dataset.read(table=table)
-    dataset.prepare()
-    dataset.encode(text_col='text')
+    datas.read(table=table)
+    datas.prepare()
+    datas.encode(text_col='text')
 
     # Export dataset
-    dataset.save(filepath='./dataset/' + f'{table}.csv')
+    datas.save(repo=repo)
 
-    return {"status": f"SIRIUS {table} dataset updated."}
+    return {"status": f"SIRIUS {table} dataset updated to {repo}."}
+
+@app.post("/load")
+async def load(query: Dict):
+    table = query['table']
+    repo = query['repo']
+    print(f'[sirius-moderation] Loading SIRIUS {table} dataset...')
+
+    # Load dataset
+    datas.load(table=table, repo=repo)
+    return {"status": f"SIRIUS {table} dataset loaded from {repo}."}
 
 @app.post("/score")
 async def score(query: Dict):

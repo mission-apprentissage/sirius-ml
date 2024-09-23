@@ -30,8 +30,11 @@ Check fastapi ip adress after running
 
 ### Test endpoints
 ```
+# Load dataset
+$ curl 'http://127.0.0.1:8000/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
+
 # Update dataset
-$ curl 'http://127.0.0.1:8000/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims"}'
+$ curl 'http://127.0.0.1:8000/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
 
 # Moderate short text
 $ curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
