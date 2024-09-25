@@ -2,6 +2,12 @@ from sentence_transformers import SentenceTransformer
 import pandas as pd
 import psycopg2
 from datasets import Dataset, load_dataset
+from joblib import Parallel, delayed
+from tqdm import tqdm
+from multiprocessing import cpu_count
+
+def parallelize(iterable, func):
+    return Parallel(n_jobs=cpu_count() - 1, prefer="threads")(delayed(func)(i) for i in tqdm(iterable))
 
 class Datas():
     def __init__(self, db='', hf=''):
@@ -61,7 +67,9 @@ class Datas():
         try:
             embeddings = self.encoder.encode(texts, device="cuda", show_progress_bar=True)
         except:
-            embeddings = self.encoder.encode(texts, device="cpu", show_progress_bar=True)
+            print(f'Detected {cpu_count()} CPU cores.')
+            embeddings = Parallel(n_jobs=cpu_count() - 1, prefer="threads")(delayed(self.encoder.encode)(i) for i in tqdm(texts, desc=f"Encoding on {cpu_count()} CPU"))
+
         emb_df = pd.DataFrame(embeddings)
         emb_df.columns = [f"emb_{i+1}" for i in range(emb_df.shape[1])]
         self.datas = pd.concat([self.datas, emb_df], axis=1)

@@ -20,7 +20,7 @@ $ pip install -r requirements.txt
 # Start server
 $ fastapi dev app/api.py
 
-# Kill all server
+# Kill all server (if blocked)
 $ sudo lsof -t -i tcp:8000 | xargs kill -9
 ```
 
