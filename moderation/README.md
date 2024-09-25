@@ -28,7 +28,7 @@ $ sudo lsof -t -i tcp:8000 | xargs kill -9
 ### Authorize ip adress (database provider in dev mode)
 Check fastapi ip adress after running
 
-### Test endpoints
+### Test local endpoints
 ```
 # Load dataset
 $ curl 'http://127.0.0.1:8000/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
@@ -54,10 +54,16 @@ docker buildx build --platform linux/amd64 -t sirius-moderation .
 ```
 ### Run image
 ```
-docker run --rm -it --user=42420:42420 -p 8000:8000 --name moderation -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-moderation
+docker run --rm -it --user=42420:42420 -p 8000:8000 --name moderation -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-moderation
 ```
-### Test endpoints
+### Test docker endpoints
 ```
+# Load dataset
+$ curl 'http://0.0.0.0:8000/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
+
+# Update dataset
+$ curl 'http://0.0.0.0:8000/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
+
 # Score
 $ curl 'http://0.0.0.0:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
@@ -83,7 +89,7 @@ $ ovhai login
 
 ### Push docker image to OVHcloud
 ```
-# Add a new registry into OVHcloud AI Tools
+# Add a new registry into OVHcloud AI Tools (if not exist)
 $ ovhai registry add registry.gra.ai.cloud.ovh.net
 
 # Push your image
@@ -95,7 +101,7 @@ $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sir
 ### Deploy
 ```
 # Run app
-$ ovhai app run --name sirius-moderation --flavor ai1-1-cpu --cpu 1 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
+$ ovhai app run --name sirius-moderation --flavor ai1-1-cpu --cpu 8 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
 
 # Stop app
 $ ovhai app stop <ovh-id>
