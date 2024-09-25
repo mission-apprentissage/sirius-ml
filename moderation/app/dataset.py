@@ -6,9 +6,6 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 from multiprocessing import cpu_count
 
-def parallelize(iterable, func):
-    return Parallel(n_jobs=cpu_count() - 1, prefer="threads")(delayed(func)(i) for i in tqdm(iterable))
-
 class Datas():
     def __init__(self, db='', hf=''):
         # Load embedding model
@@ -67,7 +64,6 @@ class Datas():
         try:
             embeddings = self.encoder.encode(texts, device="cuda", show_progress_bar=True)
         except:
-            print(f'Detected {cpu_count()} CPU cores.')
             embeddings = Parallel(n_jobs=cpu_count() - 1, prefer="threads")(delayed(self.encoder.encode)(i) for i in tqdm(texts, desc=f"Encoding on {cpu_count()} CPU"))
 
         emb_df = pd.DataFrame(embeddings)
