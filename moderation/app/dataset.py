@@ -64,7 +64,8 @@ class Datas():
         try:
             embeddings = self.encoder.encode(texts, device="cuda", show_progress_bar=True)
         except:
-            embeddings = Parallel(n_jobs=cpu_count() - 1, prefer="threads")(delayed(self.encoder.encode)(i) for i in tqdm(texts, desc=f"Encoding on {cpu_count()} CPU"))
+            nb_cpu = min(cpu_count(), 8)
+            embeddings = Parallel(n_jobs=nb_cpu - 1, prefer="threads")(delayed(self.encoder.encode)(i) for i in tqdm(texts, desc=f"Encoding on {nb_cpu} CPU"))
 
         emb_df = pd.DataFrame(embeddings)
         emb_df.columns = [f"emb_{i+1}" for i in range(emb_df.shape[1])]

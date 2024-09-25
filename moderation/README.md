@@ -103,6 +103,9 @@ $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sir
 # Run app
 $ ovhai app run --name sirius-moderation --flavor ai1-1-cpu --cpu 8 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
 
+# Deploy app
+ovhai app run --name sirius-moderation --cpu 8 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
+
 # Stop app
 $ ovhai app stop <ovh-id>
 
@@ -116,14 +119,14 @@ $ ovhai app logs <ovh-id>
 ### Test OVH endpoint
 ```
 # Load dataset
-$ curl 'https://b22b3d95-f4d8-48a5-974d-4b0ead6a1bcd.app.gra.ai.cloud.ovh.net/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
+$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
 
 # Update dataset
-$ curl 'https://b22b3d95-f4d8-48a5-974d-4b0ead6a1bcd.app.gra.ai.cloud.ovh.net/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
+$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
 
 # Score
-$ curl 'https://b22b3d95-f4d8-48a5-974d-4b0ead6a1bcd.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
+$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
 # Exposition
-$ curl 'https://b22b3d95-f4d8-48a5-974d-4b0ead6a1bcd.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
 ```
