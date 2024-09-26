@@ -51,10 +51,13 @@ $ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json
 ### Build image
 ```
 docker buildx build --platform linux/amd64 -t sirius-moderation .
+docker buildx build --platform linux/amd64 -t sirius-trainer .
 ```
 ### Run image
 ```
 docker run --rm -it --user=42420:42420 -p 8000:8000 --name moderation -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-moderation
+
+docker run --rm -it --user=42420:42420 -p 8000:8000 --name trainer -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" -e table="verbatims" -e repo="apprentissage-sirius/verbatims" sirius-trainer
 ```
 ### Test docker endpoints
 ```
@@ -73,7 +76,8 @@ $ curl 'http://0.0.0.0:8000/expose' -X POST -H 'Content-Type: application/json' 
 
 ### Stop and remove image
 ```
-$ docker stop moderation && docker rm moderation
+$ docker stop moderation 
+$ docker rmi sirius-moderation
 ```
 
 ## 3. Deploy on [OVHcloud](https://help.ovhcloud.com/csm/en-public-cloud-ai-deploy-build-use-custom-image?id=kb_article_view&sysparm_article=KB0057405)

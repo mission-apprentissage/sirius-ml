@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from typing import Dict
-from app.moderation import Classifier, expose_function
-from app.dataset import Datas
+from moderation import Classifier, expose_function
+from dataset import Datas
 import os
 from ipwhois import IPWhois
 from requests import get

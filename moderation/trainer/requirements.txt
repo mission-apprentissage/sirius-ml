@@ -1,0 +1,12 @@
+scikit-learn==1.5.1
+pandas==2.2.2
+numpy==1.26.4
+transformers==4.44.1
+torch==2.4.0
+skops==0.10.0
+joblib==1.4.2
+sentence-transformers==3.1.1
+psycopg2==2.9.9
+IPWhois==1.2.0
+datasets==3.0.0
+huggingface_hub>=0.22.0
