@@ -50,8 +50,8 @@ $ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json
 
 ### Build image
 ```
-docker buildx build --platform linux/amd64 -t sirius-moderation .
-docker buildx build --platform linux/amd64 -t sirius-trainer .
+cd moderation/api && docker buildx build --platform linux/amd64 -t sirius-moderation .
+cd moderation/trainer && docker buildx build --platform linux/amd64 -t sirius-trainer .
 ```
 ### Run image
 ```
@@ -104,8 +104,11 @@ $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sir
 
 ### Deploy
 ```
-# Run app
+# Run API app
 $ ovhai app run --name sirius-moderation --flavor ai1-1-cpu --cpu 8 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
+
+# Run trainer job
+$ ovhai job run --name sirius-trainer --flavor l4-1-gpu --gpu 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" -e table="verbatims" -e repo="apprentissage-sirius/verbatims" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-trainer
 
 # Deploy app
 ovhai app run --name sirius-moderation --cpu 8 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
@@ -116,7 +119,7 @@ $ ovhai app stop <ovh-id>
 # Delete app
 $ ovhai app delete <ovh-id>
 
-# Chek log
+# Check log
 $ ovhai app logs <ovh-id>
 ```
 
