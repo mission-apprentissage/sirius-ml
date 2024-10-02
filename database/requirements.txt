@@ -1,0 +1,6 @@
+psycopg2==2.9.9
+IPWhois==1.2.0
+fastapi[standard]==0.112.1
+uvicorn==0.30.6
+gunicorn==23.0.0
+requests==2.32.3

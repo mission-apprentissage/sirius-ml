@@ -5,16 +5,7 @@ from requests import get
 
 def main():
     # Instanciate dataset
-    datas = Datas(db=os.environ['SIRIUS_DB_URL'], hf=os.environ['SIRIUS_HF_TOKEN'])
-
-    # Get IP adress for database connection
-    ip = get('https://api.ipify.org').text
-    whois = IPWhois(ip).lookup_rdap(depth=1)
-    cidr = whois['network']['cidr']
-    name = whois['network']['name']
-    print('Provider:  ', name)
-    print('Public IP: ', ip)
-    print('CIDRs:     ', cidr)
+    datas = Datas(api=os.environ['SIRIUS_DB_API'], hf=os.environ['SIRIUS_HF_TOKEN'])
 
     # Run training
     table = os.environ['table']
@@ -23,7 +14,7 @@ def main():
 
     # Extract dataset from table
     datas.read(table=table)
-    datas.prepare()
+    datas.prepare(table=table)
     datas.encode(text_col='text')
 
     # Export dataset

@@ -1,22 +1,21 @@
 from sentence_transformers import SentenceTransformer
 import pandas as pd
-import psycopg2
+import requests
 from datasets import Dataset, load_dataset
 from joblib import Parallel, delayed
 from tqdm import tqdm
 from multiprocessing import cpu_count
 
 class Datas():
-    def __init__(self, db='', hf=''):
+    def __init__(self, api='', hf=''):
         # Load embedding model
         encoder_name = "Lajavaness/sentence-camembert-large"
         self.encoder = SentenceTransformer(encoder_name)
         print(f"[Done] Loaded encoder {encoder_name}: {self.encoder.max_seq_length} input size.")
 
         # Initialize dataset
-        self.db = db
+        self.api = api
         self.hf = hf
-        self.table = None
         self.datas = None
         print("[Done] Dataset initialized.")
 
@@ -24,24 +23,16 @@ class Datas():
     # Dataset methods
     #################
     def read(self, table=''):
-        conn = psycopg2.connect(self.db)
-        cur = conn.cursor()
-        print("[Done] Connected to database.")
-
-        # Load table
-        self.table = table
-        print(f"[Pending] Loading {table} table...")
-        query = f"SELECT * FROM {table}"
-        cur.execute(query)
-        datapoints = cur.fetchall()
-        cols = [desc[0] for desc in cur.description]
-        self.datas = pd.DataFrame(datapoints, columns=cols)
-
-        cur.close()
+        payload = dict(
+            table = table        
+        )
+        resp = requests.post(url=self.api, json=payload)
+        data = resp.json()
+        self.datas = pd.DataFrame(data['datapoints'], columns=data['cols'])
         print(f"[Done] {table} table loaded.")
 
-    def prepare(self):
-        if self.table == 'verbatims':
+    def prepare(self, table=''):
+        if table == 'verbatims':
             cols = ['question_key', 'content', 'status', 'created_at']
             dataset = self.datas[cols].copy()
             dataset['text'] = dataset['question_key'] + ': ' + dataset['content']
@@ -70,7 +61,7 @@ class Datas():
         emb_df = pd.DataFrame(embeddings)
         emb_df.columns = [f"emb_{i+1}" for i in range(emb_df.shape[1])]
         self.datas = pd.concat([self.datas, emb_df], axis=1)
-        print(f"[Done] {self.table} embeddings ready.")
+        print(f"[Done] embeddings ready.")
 
     def save(self, repo):
         dataset = Dataset.from_pandas(self.datas)
