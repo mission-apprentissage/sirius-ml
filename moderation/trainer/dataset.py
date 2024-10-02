@@ -36,7 +36,7 @@ class Datas():
             cols = ['question_key', 'content', 'status', 'created_at']
             dataset = self.datas[cols].copy()
             dataset['text'] = dataset['question_key'] + ': ' + dataset['content']
-            dataset['created_at'] = pd.to_datetime(dataset['created_at'])
+            dataset['created_at'] = pd.to_datetime(dataset['created_at'], format='ISO8601')
             dataset['year'] = dataset['created_at'].dt.year
             dataset['month'] = dataset['created_at'].dt.month
             dataset['day'] = dataset['created_at'].dt.day
