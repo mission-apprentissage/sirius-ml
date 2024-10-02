@@ -2,6 +2,9 @@
 
 ## 0. Add environment variable
 The application depends on this secret environment variables:
+- $SIRIUS_AI_USER
+- $SIRIUS_AI_PWD
+- $SIRIUS_AI_TOKEN
 - $SIRIUS_DB_API
 - $SIRIUS_HF_TOKEN
 - $SIRIUS_MISTRAL_API_KEY
@@ -45,7 +48,7 @@ $ docker rmi sirius-trainer
 $ curl https://cli.gra.ai.cloud.ovh.net/install.sh | bash && source $HOME/.bashrc
 
 # Login client
-$ ovhai login
+$ ovhai login -u $SIRIUS_AI_USER -p $SIRIUS_AI_PWD
 ```
 
 ### Push docker image to OVHcloud
@@ -54,7 +57,7 @@ $ ovhai login
 $ ovhai registry add registry.gra.ai.cloud.ovh.net
 
 # Push your image
-$ docker login registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59
+$ docker login -u $SIRIUS_AI_USER -p $SIRIUS_AI_PWD registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59
 $ docker tag sirius-trainer registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-trainer
 $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-trainer
 ```
@@ -64,16 +67,17 @@ $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sir
 # Run trainer job
 $ ovhai job run --name sirius-trainer --flavor l4-1-gpu --gpu 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_API="$SIRIUS_DB_API" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" -e table="verbatims" -e repo="apprentissage-sirius/verbatims" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-trainer
 
+
+# Rerun trainer job
+$ ovhai job rerun f2ec2915-edb1-4643-8323-e833c624da03
+
 # Check log
 $ ovhai job logs <ovh-id>
 ```
 
 ### Run job endpoint
-https://gra.training.ai.cloud.ovh.net/
+see API doc: https://gra.training.ai.cloud.ovh.net/
 
 ```
-$ curl --request PUT \
-  --url https://gra.training.ai.cloud.ovh.net/v1/job/516d5974-60b2-4aeb-b775-2ddd42ff1e61/start \
-  --header 'Accept: application/json' \
-  --header 'Content-Type: application/json'
+$ curl --request PUT --url https://gra.training.ai.cloud.ovh.net/v1/job/f2ec2915-edb1-4643-8323-e833c624da03/start -H 'Accept: application/json' -H 'Authorization: Bearer '$SIRIUS_AI_TOKEN -H 'Content-Type: application/json'
 ```

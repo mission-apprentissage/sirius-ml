@@ -29,7 +29,7 @@ class Datas():
         resp = requests.post(url=self.api, json=payload)
         data = resp.json()
         self.datas = pd.DataFrame(data['datapoints'], columns=data['cols'])
-        print(f"[Done] {table} table loaded.")
+        print(f"[Done] Dataset loaded.")
 
     def prepare(self, table=''):
         if table == 'verbatims':
@@ -44,14 +44,14 @@ class Datas():
             dataset.drop_duplicates(inplace=True)
             dataset.reset_index(drop=True, inplace=True)
             self.datas = dataset
-            print(f"[Done] {self.table} dataset ready.")
+            print(f"[Done] Dataset prepared.")
         else:
             print(f"[Error] Unknown specific format rules for {table} dataset.")
 
     def encode(self, text_col):
         # Create embeddings
         texts = self.datas[text_col].tolist()
-        print(f"[Pending] Encoding dataset {self.table}...")
+        print(f"[Pending] Encoding dataset...")
         try:
             embeddings = self.encoder.encode(texts, device="cuda", show_progress_bar=True)
         except:
@@ -61,14 +61,13 @@ class Datas():
         emb_df = pd.DataFrame(embeddings)
         emb_df.columns = [f"emb_{i+1}" for i in range(emb_df.shape[1])]
         self.datas = pd.concat([self.datas, emb_df], axis=1)
-        print(f"[Done] embeddings ready.")
+        print(f"[Done] Embeddings ready.")
 
     def save(self, repo):
         dataset = Dataset.from_pandas(self.datas)
         dataset.push_to_hub(repo, private=True, token=self.hf)
-        print(f"[Done] {self.table} exported to: {repo}.")
+        print(f"[Done] Dataset exported to: {repo}.")
 
-    def load(self, table, repo):
-        self.table = table
+    def load(self, repo):
         self.datas = load_dataset(repo, token=self.hf, split="all").to_pandas()
-        print(f"[Done] {self.table} loaded from {repo}: {self.datas.shape}")
+        print(f"[Done] Dataset loaded from {repo}: {self.datas.shape}")
