@@ -23,13 +23,13 @@ print('Provider:  ', name)
 print('Public IP: ', ip)
 print('CIDRs:     ', cidr)
 
-@app.get("/")
-async def root():
+@app.get("/") 
+def root():
     print('[sirius-moderation] Request for index page received.')
     return {"status": "sirius-moderation API running."}
 
 @app.post("/update")
-async def update(query: Dict):
+def update(query: Dict):
     table = query['table']
     repo = query['repo']
     print(f'[sirius-moderation] Updating SIRIUS {table} dataset...')
@@ -45,7 +45,7 @@ async def update(query: Dict):
     return {"status": f"SIRIUS {table} dataset updated to {repo}."}
 
 @app.post("/load")
-async def load(query: Dict):
+def load(query: Dict):
     table = query['table']
     repo = query['repo']
     print(f'[sirius-moderation] Loading SIRIUS {table} dataset...')
@@ -55,7 +55,7 @@ async def load(query: Dict):
     return {"status": f"SIRIUS {table} dataset loaded from {repo}."}
 
 @app.post("/score")
-async def score(query: Dict):
+def score(query: Dict):
     if 'rules' in query.keys():
         rules = query['rules']
     else:
@@ -87,7 +87,7 @@ async def score(query: Dict):
     }
 
 @app.post("/expose")
-async def expose(query: Dict):
+def expose(query: Dict):
     text = query['text']
 
     # Exposition classifier

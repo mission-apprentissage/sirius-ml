@@ -104,9 +104,6 @@ $ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sir
 
 ### Deploy
 ```
-# Run API app
-$ ovhai app run --name sirius-moderation --flavor ai1-1-cpu --cpu 8 --replicas 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-moderation
-
 # Run trainer job
 $ ovhai job run --name sirius-trainer --flavor l4-1-gpu --gpu 1 --default-http-port 8000 --unsecure-http -e SIRIUS_DB_URL="$SIRIUS_DB_URL" -e SIRIUS_HF_TOKEN="$SIRIUS_HF_TOKEN" -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" -e table="verbatims" -e repo="apprentissage-sirius/verbatims" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-trainer
 
@@ -132,8 +129,8 @@ $ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/lo
 $ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
 
 # Score
-$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
+$ curl 'https://2b1d0760-a1f7-485d-8b69-2ecdf299615a.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
 # Exposition
-$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+$ curl 'https://2b1d0760-a1f7-485d-8b69-2ecdf299615a.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
 ```
