@@ -59,6 +59,7 @@ class Classifier:
         self.format = """
             {
                 "avis": "oui|non"
+                "score": "score en fonction du nombre de critères d'intérêts évoqués, format float précision 2 chiffres"
                 "justification": "justification"
             }
         """
@@ -233,9 +234,12 @@ class Classifier:
                 HumanMessage(content=UserPrompt)
             ])
         try:
-            return json.loads(response.content)
+            res = json.loads(response.content)
+            res['score'] = float(res['score']) if res['score'] != None else float(0)
+            return res
+
         except:
-            return {"avis":"non", "justification":"Témoignage non-significatif"}
+            return {"avis":"non", "score": 0.0, "justification":"Témoignage non-significatif"}
 
 def expose_function(testimony, categories=''):
     if categories == '':
