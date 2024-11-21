@@ -123,14 +123,14 @@ $ ovhai app logs <ovh-id>
 ### Test OVH endpoint
 ```
 # Load dataset
-$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
+$ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo":"apprentissage-sirius/verbatims"}'
 
 # Update dataset
-$ curl 'https://ee52da47-56c6-416b-acd1-2140c369da47.app.gra.ai.cloud.ovh.net/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
+$ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/update' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims", "repo": "apprentissage-sirius/verbatims"}'
 
 # Score
-$ curl 'https://2b1d0760-a1f7-485d-8b69-2ecdf299615a.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
+$ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
 
 # Exposition
-$ curl 'https://2b1d0760-a1f7-485d-8b69-2ecdf299615a.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+$ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
 ```

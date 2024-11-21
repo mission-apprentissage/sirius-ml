@@ -88,8 +88,8 @@ $ ovhai app delete <ovh-id>
 ### Test endpoint
 ```
 # Score
-curl https://3825adb4-d3ca-42cd-a049-bce84b87d7f6.app.gra.ai.cloud.ovh.net/score -X POST -H "Content-Type: multipart/form-data" -F "file=@./dataset/sample.csv"
+curl https://<ovh-id>.app.gra.ai.cloud.ovh.net/score -X POST -H "Content-Type: multipart/form-data" -F "file=@./dataset/sample.csv"
 
 # Detect
-curl https://3825adb4-d3ca-42cd-a049-bce84b87d7f6.app.gra.ai.cloud.ovh.net/detect -X POST -H 'Content-Type: application/json' -d '{"scores":[-9.890680333249605,-8.81517297694887,-10.817086031345966,-9.134718245421285,-9.136104401859312,-10.10892008829345,-9.246591666943132], "percent": 1}'`
+curl https://<ovh-id>.app.gra.ai.cloud.ovh.net/detect -X POST -H 'Content-Type: application/json' -d '{"scores":[-9.890680333249605,-8.81517297694887,-10.817086031345966,-9.134718245421285,-9.136104401859312,-10.10892008829345,-9.246591666943132], "percent": 1}'`
 ```

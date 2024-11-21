@@ -69,7 +69,7 @@ $ ovhai job run --name sirius-trainer --flavor l4-1-gpu --gpu 1 --default-http-p
 
 
 # Rerun trainer job
-$ ovhai job rerun f2ec2915-edb1-4643-8323-e833c624da03
+$ ovhai job rerun <ovh-id>
 
 # Check log
 $ ovhai job logs <ovh-id>
@@ -79,5 +79,5 @@ $ ovhai job logs <ovh-id>
 see API doc: https://gra.training.ai.cloud.ovh.net/
 
 ```
-$ curl --request PUT --url https://gra.training.ai.cloud.ovh.net/v1/job/f2ec2915-edb1-4643-8323-e833c624da03/start -H 'Accept: application/json' -H 'Authorization: Bearer '$SIRIUS_AI_TOKEN -H 'Content-Type: application/json'
+$ curl --request PUT --url https://gra.training.ai.cloud.ovh.net/v1/job/<ovh-id>/start -H 'Accept: application/json' -H 'Authorization: Bearer '$SIRIUS_AI_TOKEN -H 'Content-Type: application/json'
 ```

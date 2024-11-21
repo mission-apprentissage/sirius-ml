@@ -87,11 +87,12 @@ $ ovhai app stop <ovh-id>
 $ ovhai app delete <ovh-id>
 
 # Check log
-$ ovhai app logs 04609d3d-99fb-4017-b20c-51331b494cfe
+$ ovhai app logs <ovh-id>
 ```
 
 ### Test OVH endpoint
 ```
 # Load database
-$ curl 'https://04609d3d-99fb-4017-b20c-51331b494cfe.app.gra.ai.cloud.ovh.net/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims"}'
+$ curl 'https://<ovh-id>/load' -X POST -H 'Content-Type: application/json' -d '{"table": "verbatims"}'
+[...]{"GEM":{"avis":"non","justification":"Le témoignage ne fournit pas assez d'informations pour déterminer s'il est intéressant ou non. Il indique simplement que la personne suit des cours, sans mentionner d'expérience positive ou négative, d'apprentissage, de compétences acquises ou de défis rencontrés."}[...]
 ```
