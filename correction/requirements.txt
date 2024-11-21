@@ -1,0 +1,5 @@
+fastapi[standard]==0.112.1
+uvicorn==0.30.6
+gunicorn==23.0.0
+requests==2.32.3
+mistralai==1.2.3
