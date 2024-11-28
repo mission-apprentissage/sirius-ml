@@ -1,4 +1,4 @@
-# SIRIUS-CORRECRTION
+# SIRIUS-CORRECTION
 
 ## 0. Add environment variable
 The application depends on this secret environment variables:
