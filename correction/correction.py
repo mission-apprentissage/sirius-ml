@@ -13,9 +13,15 @@ class Corrector:
         """
 
         self.AIPrompt = f"""
-            Vous êtes un correcteur orthographique et grammatical qui doit renvoyer une version corrigée de témoignages écrits.
-            Si le témoignage ne fournit pas assez d'informations, ne rien corriger.
+            Vous êtes un correcteur automatique qui doit renvoyer une version corrigée de témoignages écrits.
 
+            Instructions:
+            - Vous devez uniquement corriger les fautes d'orthographes et de grammaires.
+            - Vous ne devez pas reformuler le texte ou remplacer par des synonymes.
+            - Vous devez conserver le même registre de langage.
+            - Si le témoignage ne fournit pas assez d'informations ou est incompréhensible, ne rien corriger.
+
+            Réponse attendue:
             Répondre uniquement selon le format suivant:
             {FORMAT}
 
@@ -42,7 +48,7 @@ class Corrector:
         ]
 
         response = self.client.chat.complete(
-            model = "mistral-small-latest",
+            model = "mistral-large-latest",
             messages = messages,
             response_format = {
                 "type": "json_object",

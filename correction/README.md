@@ -90,5 +90,5 @@ $ ovhai app logs <ovh-id>
 ```
 # Get correction
 $ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/correct' -X POST -H 'Content-Type: application/json' -d '{"text": "cuisinner"}'
-{"texte":"cuisinner","correction":"cuisinier","justification":"Le mot correct est 'cuisinier', qui désigne une personne qui cuisine."}
+{"texte":"cuisinner","correction":"cuisiner","justification":"Correction de la faute d'orthographe."}
 ```
