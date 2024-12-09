@@ -90,5 +90,6 @@ $ ovhai app logs <ovh-id>
 ```
 # Get anonymization
 $ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/anonymize' -X POST -H 'Content-Type: application/json' -d '{"text": "Jean Dupont et Marie Durand ont assisté à la réunion."}'
-{'texte': 'Jean Dupont et Marie Durand ont assisté à la réunion.', 'anonymisation': "Quelqu'un et quelqu'un d'autre ont assisté à la réunion.", 'justification': "Les noms 'Jean Dupont' et 'Marie Durand' ont été remplacés par 'quelqu'un' et 'quelqu'un d'autre' pour anonymiser les individus mentionnés."}
+
+{"texte":"Jean Dupont et Marie Durand ont assisté à la réunion.","anonymisation":"Ils ont assisté à la réunion.","justification":"Les noms propres 'Jean Dupont' et 'Marie Durand' ont été remplacés par le pronom 'Ils' pour anonymiser le texte."}
 ```

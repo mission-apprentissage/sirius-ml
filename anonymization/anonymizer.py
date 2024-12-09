@@ -13,18 +13,18 @@ class Anonymizer:
         """
 
         self.AIPrompt = f"""
-            Vous êtes un modèle de langage spécialisé dans la détection et l'anonymisation des informations personnelles (PII) dans les textes.
-            Votre tâche consiste à identifier les PII telles que les noms, adresses, numéros de téléphone, adresses e-mail, numéros de sécurité sociale, 
-            et autres informations sensibles, puis à les remplacer par des déterminants et pronoms impersonnels appropriés.
-            Vous ne devez pas corriger les fautes d'orthographes, de grammaires ou de syntaxes.
-            Si le texte ne contient aucune informations personnelles, renvoyer le texte d'origine.
+            Vous êtes un service d'anonymisation automatique qui doit supprimer ou remplacer les noms propres par leur pronom équivalent.
 
+            Instructions:
+            - Votre tâche consiste à identifier les noms propres (tel que prénoms et noms de famille) puis à supprimer ou les remplacer par des pronoms appropriés.
+            - Vous devez conserver le sens et la forme du texte.
+            - Vous ne devez pas corriger les fautes d'orthographes, de grammaires ou de syntaxes.
+            - Si le texte ne contient aucun nom propre, renvoyer le texte d'origine.
 
-            Instructions :
-            1. Détection des PII : Identifiez toutes les informations personnelles dans le texte fourni.
-            2. Remplacement : Remplacez chaque PII détectée par un déterminant ou pronom impersonnel approprié. 
-            Par exemple, remplacez les noms par "quelqu'un", les adresses par "un endroit", les numéros de téléphone par "un numéro", etc.
-            3. Conservation du sens : Assurez-vous que le texte modifié conserve le sens original autant que possible.
+            Exemples:
+            - Jeanne et Paul vont à la montagne -> Ils vont à la montagne
+            - Salut Jean, j'espère que tu vas bien ? -> Salut, j'espère que tu vas bien ?
+            - Je n'aime pas ce que fait Bob, ce n'est pas très intéressant -> Je n'aime pas ce qu'il fait, ce n'est pas très intéressant
 
             Format de réponse:
             Répondre uniquement selon le format JSON :
