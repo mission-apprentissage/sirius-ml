@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from typing import Dict
-from moderation import Classifier, expose_function
+from moderation import Classifier
 from dataset import Datas
 import os
 from ipwhois import IPWhois
@@ -84,18 +84,4 @@ def score(query: Dict):
     return {
             'text': text,
             'scores': scores,
-    }
-
-@app.post("/expose")
-def expose(query: Dict):
-    text = query['text']
-
-    # Exposition classifier
-    print(f"Classifying '{text}' with EXPOSITION categories...:")
-    exposition = expose_function(text)
-    print(exposition)
-
-    return {
-            'text': text,
-            'exposition' : exposition,
     }

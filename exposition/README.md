@@ -1,4 +1,4 @@
-# SIRIUS-CORRECTION
+# SIRIUS-EXPOSITION
 
 ## 0. Add environment variable
 The application depends on this secret environment variables:
@@ -9,7 +9,7 @@ The application depends on this secret environment variables:
 ### Install the requirements
 
 ```
-$ cd correction && python3 -m venv .venv && source .venv/bin/activate
+$ cd exposition && python3 -m venv .venv && source .venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
@@ -24,29 +24,32 @@ $ sudo lsof -t -i tcp:8000 | xargs kill -9
 
 ### Test local endpoints
 ```
-# Get correction
+# Get exposition
 $ curl 'http://127.0.0.1:8000/correct' -X POST -H 'Content-Type: application/json' -d '{"text": "cuisinner"}'
 ```
 
 ## 2. Create image
 ### Build image
 ```
-cd correction && docker buildx build --platform linux/amd64 -t sirius-correction .
+cd exposition && docker buildx build --platform linux/amd64 -t sirius-exposition .
 ```
 ### Run image
 ```
-docker run --rm -it --user=42420:42420 -p 8000:8000 --name correction -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-correction
+docker run --rm -it --user=42420:42420 -p 8000:8000 --name exposition -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" sirius-exposition
 ```
 ### Test docker endpoints
 ```
-# Get correction
-$ curl 'http://0.0.0.0:8000/correct' -X POST -H 'Content-Type: application/json' -d '{"text": "cuisinner"}'
+# Get exposition
+$ curl 'http://0.0.0.0:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "cuisinner"}'
+
+# Exposition
+$ curl 'http://0.0.0.0:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
 ```
 
 ### Stop and remove image
 ```
-$ docker stop correction 
-$ docker rmi sirius-correction
+$ docker stop exposition
+$ docker rmi sirius-exposition
 ```
 
 ## 3. Deploy on [OVHcloud](https://help.ovhcloud.com/csm/en-public-cloud-ai-deploy-build-use-custom-image?id=kb_article_view&sysparm_article=KB0057405)
@@ -67,14 +70,14 @@ $ ovhai registry add registry.gra.ai.cloud.ovh.net
 
 # Push your image
 $ docker login registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59
-$ docker tag sirius-correction registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-correction
-$ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-correction
+$ docker tag sirius-exposition registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-exposition
+$ docker push registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-exposition
 ```
 
 ### Deploy
 ```
 # Run API app
-$ ovhai app run --name sirius-correction --cpu 1 --default-http-port 8000 --unsecure-http -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-correction
+$ ovhai app run --name sirius-exposition --cpu 1 --default-http-port 8000 --unsecure-http -e SIRIUS_MISTRAL_API_KEY="$SIRIUS_MISTRAL_API_KEY" registry.gra.ai.cloud.ovh.net/deae30132f2745cda273f1ebce462f59/sirius-exposition
 
 # Stop app
 $ ovhai app stop <ovh-id>
@@ -88,7 +91,7 @@ $ ovhai app logs <ovh-id>
 
 ### Test OVH endpoint
 ```
-# Get correction
-$ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/correct' -X POST -H 'Content-Type: application/json' -d '{"text": "cuisinner"}'
+# Get exposition
+$ curl 'https://<ovh-id>.app.gra.ai.cloud.ovh.net/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "cuisinner"}'
 {"texte":"cuisinner","correction":"cuisiner","justification":"Correction de la faute d'orthographe."}
 ```

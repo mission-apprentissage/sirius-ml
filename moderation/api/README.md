@@ -44,6 +44,13 @@ $ curl 'http://127.0.0.1:8000/score' -X POST -H 'Content-Type: application/json'
 
 # Check text exposition
 $ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+
+# Text correction
+$ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+
+# Text anonymization
+$ curl 'http://127.0.0.1:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
+
 ```
 
 ## 2. Create image
@@ -69,9 +76,6 @@ $ curl 'http://0.0.0.0:8000/update' -X POST -H 'Content-Type: application/json' 
 
 # Score
 $ curl 'http://0.0.0.0:8000/score' -X POST -H 'Content-Type: application/json' -d '{"text": "patisserie ou cuisine"}'
-
-# Exposition
-$ curl 'http://0.0.0.0:8000/expose' -X POST -H 'Content-Type: application/json' -d '{"text": "Il faut se lever tôt le matin et tenir toute la journée mais ça vaut le coup! Surtout si tu es en fauteuil roulant"}'
 ```
 
 ### Stop and remove image
