@@ -73,7 +73,7 @@ def correct_function(testimony='', instructions=''):
         """
 
     AIPrompt = f"""
-        Vous êtes un correcteur automatique qui doit renvoyer une version corrigée de témoignages écrits.
+        Vous êtes un correcteur automatique qui doit renvoyer une version corrigée de témoignages.
 
         Instructions:
         {instructions}
@@ -107,36 +107,37 @@ def correct_function(testimony='', instructions=''):
     try:
         return json.loads(response.content)
     except:
-        return {'correction': '', 'justification': ''}
+        return {'correction': '', 'modification': 'non', 'justification': ''}
 
 
 def anonymize_function(testimony='', instructions=''):
     FORMAT ="""
     {
-        "anonymisation": "texte anonymisé",
-        "modification": "oui|non si le texte anonymisé est différent du texte d'origine"
-        "justification": "justification de l'anonymisation"
+        "anonymisation": "texte modifié",
+        "modification": "oui|non si le texte modifié est différent du texte d'origine"
+        "justification": "justification de la modification"
     }
     """
 
     if instructions == '':
         instructions = """
-        - Identifiez les prénoms et noms de famille puis les supprimer ou les remplacer par des pronoms appropriés.
+        Vous êtes un effaceur de prénoms et noms de personnes
+
+        Instructions:
+        - Identifier les prénoms et noms de personnes puis les supprimer ou les remplacer par des pronoms appropriés.
         - Conserver le sens et la forme du texte.
         - Ne pas corriger les fautes d'orthographes, de grammaires ou de syntaxes.
-        - Si le texte ne contient aucun nom propre, renvoyer le texte d'origine.
+        - Si le texte ne contient aucun prénom ou nom de personnes, renvoyer le texte d'origine.
 
         Exemples:
         - Jeanne et Paul vont à la montagne -> Ils vont à la montagne
         - Salut Jean, j'espère que tu vas bien ? -> Salut, j'espère que tu vas bien ?
-        - Je n'aime pas ce que fait Bob, ce n'est pas très intéressant -> Je n'aime pas ce qu'il fait, ce n'est pas très intéressant
-        - Bonjour monsieur Dupont !-> Bonjour monsieur !
+        - Je n'aime pas ce que fait Bob, ce n'est pas très intéressant. -> Je n'aime pas ce qu'il fait, ce n'est pas très intéressant.
+        - Ma mère adorait mon oncle Jean. -> Ma mère adorait mon oncle.
+        - Le stade de Marseille ? C'est vraiment mieux que celui d'Antoine ! -> Marseille ? C'est vraiment mieux que celui-ci !
         """
 
     AIPrompt = f"""
-        Vous êtes un service d'anonymisation automatique qui doit supprimer ou remplacer les prénoms et noms de famille par leur pronom équivalent.
-
-        Instructions:
         {instructions}
 
         Réponse attendue:
@@ -147,7 +148,7 @@ def anonymize_function(testimony='', instructions=''):
     """
 
     UserPrompt = f"""
-        Voici un témoignage à anonymiser:
+        Voici un témoignage à modifier:
         ```
         {testimony}
         ```
@@ -155,6 +156,7 @@ def anonymize_function(testimony='', instructions=''):
 
     chat = ChatMistralAI(
         mistral_api_key=os.environ['SIRIUS_MISTRAL_API_KEY'],
+        model = "mistral-large-latest",
         temperature=0
         ).bind(response_format={"type": "json_object"})
 
@@ -167,4 +169,4 @@ def anonymize_function(testimony='', instructions=''):
     try:
         return json.loads(response.content)
     except:
-        return {'anonymisation': '', 'justification': ''}
+        return {'anonymisation': '', 'modification': 'non', 'justification': ''}
