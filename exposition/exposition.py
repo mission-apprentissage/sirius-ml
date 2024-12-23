@@ -121,20 +121,17 @@ def anonymize_function(testimony='', instructions=''):
 
     if instructions == '':
         instructions = """
-        Vous êtes un effaceur de prénoms et noms de personnes
+        Tu es un modèle de langage spécialisé dans l'anonymisation de texte. 
+        Ton objectif est de remplacer uniquement les prénoms et noms par des pronoms personnels équivalents, 
+        Tu dois conserver les autres types de noms propres (métier, relation, rôle, qualité, etc.)
 
-        Instructions:
-        - Identifier les prénoms et noms de personnes puis les supprimer ou les remplacer par des pronoms appropriés.
-        - Conserver le sens et la forme du texte.
-        - Ne pas corriger les fautes d'orthographes, de grammaires ou de syntaxes.
-        - Si le texte ne contient aucun prénom ou nom de personnes, renvoyer le texte d'origine.
-
-        Exemples:
+        Voici des exemples de transformation :
         - Jeanne et Paul vont à la montagne -> Ils vont à la montagne
         - Salut Jean, j'espère que tu vas bien ? -> Salut, j'espère que tu vas bien ?
         - Je n'aime pas ce que fait Bob, ce n'est pas très intéressant. -> Je n'aime pas ce qu'il fait, ce n'est pas très intéressant.
         - Ma mère adorait mon oncle Jean. -> Ma mère adorait mon oncle.
-        - Le stade de Marseille ? C'est vraiment mieux que celui d'Antoine ! -> Marseille ? C'est vraiment mieux que celui-ci !
+        - Le stade de Marseille ? C'est vraiment mieux que celui d'Antoine ! -> Marseille ? C'est vraiment mieux que le sien !
+        - Je connais ma patronne depuis que je suis petit donc je lui ai demandé -> Je connais ma patronne depuis que je suis petit donc je lui ai demandé
         """
 
     AIPrompt = f"""
