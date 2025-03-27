@@ -2,7 +2,7 @@
 
 SIRIUS-ML is a machine learning repository designed to provide tools and utilities for verbatims moderation, classification, public exposition and outlier detection for the [SIRIUS project](https://beta.gouv.fr/startups/sirius.html).
 
-API are used by the main [SIRIUS service](https://github.com/mission-apprentissage/sirius).
+API are called by the main [SIRIUS service](https://github.com/mission-apprentissage/sirius).
 
 ## Features
 
