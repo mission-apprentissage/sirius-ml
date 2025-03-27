@@ -24,7 +24,7 @@ def expose_function(testimony, categories=''):
     AIPrompt = f"""
         Indiquer si un témoignage aborde un ou plusieurs sujets en fonction des catégories suivantes:
         ```
-        - {'|'.join(list(categories.keys()))}
+        - {'\n- '.join(list(categories.keys()))}
         ```
 
         Votre réponse doit obligatoirement être au format JSON suivant:
